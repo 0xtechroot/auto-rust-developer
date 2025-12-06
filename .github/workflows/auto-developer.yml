@@ -124,7 +124,7 @@ jobs:
           impl Default for Config {
               fn default() -> Self {
                   Self {
-                      app_name: "auto-rust-developer".to_string(),
+                      app_name: "rust-developer".to_string(),
                       version: "0.1.0".to_string(),
                       debug: false,
                       max_retries: 3,
@@ -151,7 +151,7 @@ jobs:
             3)
               mkdir -p tests
               cat > tests/integration_test.rs << 'EOF'
-          use auto_rust_developer::App;
+          use rust_developer::App;
           
           #[test]
           fn test_app_integration() {
@@ -184,7 +184,7 @@ EOF
               mkdir -p benches
               cat > benches/benchmark.rs << 'EOF'
           use criterion::{black_box, criterion_group, criterion_main, Criterion};
-          use auto_rust_developer::App;
+          use rust_developer::App;
           
           fn benchmark_app_creation(c: &mut Criterion) {
               c.bench_function("app creation", |b| {
