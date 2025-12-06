@@ -2,8 +2,8 @@ name: CI/CD Pipeline
 
 on:
   schedule:
-    - cron: '0 * * * *'
-    - cron: '0 */3 * * *'
+    - cron: '0 */4 * * *'  # Every 4 hours - realistic developer activity
+    - cron: '0 */6 * * *'  # Every 6 hours - issue tracking
   workflow_dispatch:
   push:
     branches: [ main ]
@@ -13,7 +13,7 @@ on:
 jobs:
   development:
     runs-on: ubuntu-latest
-    if: github.event.schedule == '0 * * * *' || github.event_name == 'workflow_dispatch'
+    if: github.event.schedule == '0 */4 * * *' || github.event_name == 'workflow_dispatch'
     permissions:
       contents: write
     
@@ -37,9 +37,13 @@ jobs:
           TIMESTAMP=$(date +%s)
           HOUR=$(date +%H)
           
-          case $((HOUR % 6)) in
-            0)
-              cat > src/module_$TIMESTAMP.rs << 'EOF'
+          # Randomly decide number of commits (1-3 commits per run for realism)
+          NUM_COMMITS=$((1 + RANDOM % 3))
+          
+          for commit_num in $(seq 1 $NUM_COMMITS); do
+            case $((RANDOM % 6)) in
+              0)
+                cat > src/module_${TIMESTAMP}_${commit_num}.rs << 'EOF'
           /// Feature processing module
           use std::error::Error;
           
@@ -76,11 +80,11 @@ jobs:
               }
           }
           EOF
-              echo "pub mod module_$TIMESTAMP;" >> src/lib.rs
-              COMMIT_MSG="feat(modules): add feature processing capabilities"
-              ;;
-            1)
-              cat > src/errors.rs << 'EOF'
+                echo "pub mod module_${TIMESTAMP}_${commit_num};" >> src/lib.rs
+                COMMIT_MSG="feat(modules): add feature processing capabilities"
+                ;;
+              1)
+                cat > src/errors_${TIMESTAMP}_${commit_num}.rs << 'EOF'
           /// Error handling module
           use std::fmt;
           
@@ -103,13 +107,11 @@ jobs:
           
           impl std::error::Error for AppError {}
           EOF
-              if ! grep -q "pub mod errors;" src/lib.rs; then
-                  echo "pub mod errors;" >> src/lib.rs
-              fi
-              COMMIT_MSG="fix(errors): improve error handling with custom types"
-              ;;
-            2)
-              cat > src/config.rs << 'EOF'
+                echo "pub mod errors_${TIMESTAMP}_${commit_num};" >> src/lib.rs
+                COMMIT_MSG="fix(errors): improve error handling with custom types"
+                ;;
+              2)
+                cat > src/config_${TIMESTAMP}_${commit_num}.rs << 'EOF'
           /// Configuration module
           use serde::{Deserialize, Serialize};
           
@@ -143,14 +145,12 @@ jobs:
               }
           }
           EOF
-              if ! grep -q "pub mod config;" src/lib.rs; then
-                  echo "pub mod config;" >> src/lib.rs
-              fi
-              COMMIT_MSG="refactor(config): add configuration management"
-              ;;
-            3)
-              mkdir -p tests
-              cat > tests/integration_test.rs << 'EOF'
+                echo "pub mod config_${TIMESTAMP}_${commit_num};" >> src/lib.rs
+                COMMIT_MSG="refactor(config): add configuration management"
+                ;;
+              3)
+                mkdir -p tests
+                cat > tests/integration_test_${TIMESTAMP}_${commit_num}.rs << 'EOF'
           use rust_developer::App;
           
           #[test]
@@ -165,10 +165,10 @@ jobs:
               assert_eq!(app.name, "MyApp");
           }
           EOF
-              COMMIT_MSG="test: add integration test coverage"
-              ;;
-            4)
-              cat >> README.md << 'EOF'
+                COMMIT_MSG="test: add integration test coverage"
+                ;;
+              4)
+                cat >> README.md << 'EOF'
 
 ## 🔄 Recent Updates
 
@@ -178,11 +178,11 @@ jobs:
 - Performance optimizations
 
 EOF
-              COMMIT_MSG="docs: update documentation"
-              ;;
-            5)
-              mkdir -p benches
-              cat > benches/benchmark.rs << 'EOF'
+                COMMIT_MSG="docs: update documentation"
+                ;;
+              5)
+                mkdir -p benches
+                cat > benches/benchmark_${TIMESTAMP}_${commit_num}.rs << 'EOF'
           use criterion::{black_box, criterion_group, criterion_main, Criterion};
           use rust_developer::App;
           
@@ -200,24 +200,32 @@ EOF
           criterion_group!(benches, benchmark_app_creation);
           criterion_main!(benches);
           EOF
-              COMMIT_MSG="perf: add performance benchmarks"
-              ;;
-          esac
+                COMMIT_MSG="perf: add performance benchmarks"
+                ;;
+            esac
+            
+            git config user.name "0xtechroot"
+            git config user.email "root@ancilar.com"
+            
+            git add .
+            if git diff --staged --quiet; then
+              echo "No changes for commit $commit_num"
+            else
+              git commit -m "$COMMIT_MSG"
+            fi
+            
+            # Small delay between commits for realism (30-120 seconds)
+            if [ $commit_num -lt $NUM_COMMITS ]; then
+              sleep $((30 + RANDOM % 90))
+            fi
+          done
           
-          git config user.name "0xtechroot"
-          git config user.email "root@ancilar.com"
-          
-          git add .
-          if git diff --staged --quiet; then
-            echo "No changes"
-          else
-            git commit -m "$COMMIT_MSG"
-            git push --force-with-lease
-          fi
+          # Push all commits at once
+          git push --force-with-lease
 
   issue-tracking:
     runs-on: ubuntu-latest
-    if: github.event.schedule == '0 */3 * * *' || github.event_name == 'workflow_dispatch'
+    if: github.event.schedule == '0 */6 * * *' || github.event_name == 'workflow_dispatch'
     permissions:
       issues: write
     
