@@ -1,4 +1,4 @@
-use auto_rust_developer::{App, utils};
+use rust_developer::{App, utils};
 
 #[test]
 fn test_app_integration() {
@@ -16,4 +16,10 @@ fn test_utils_validation() {
 fn test_app_creation_with_empty_name() {
     let app = App::new("".to_string(), "1.0.0".to_string());
     assert_eq!(app.name, "");
+}
+
+#[test]
+fn test_app_version() {
+    let app = App::new("MyApp".to_string(), "2.0.0".to_string());
+    assert_eq!(app.version, "2.0.0");
 }
