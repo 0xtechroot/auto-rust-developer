@@ -2,8 +2,8 @@
 name = "auto-rust-developer"
 version = "0.1.0"
 edition = "2021"
-authors = ["Auto Developer Bot <bot@auto-developer.com>"]
-description = "An automated Rust project with continuous development"
+authors = ["Manmeet <manietdavv@gmail.com>"]
+description = "A modern Rust CLI application with async capabilities"
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
