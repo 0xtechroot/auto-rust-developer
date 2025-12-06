@@ -1,9 +1,13 @@
 [package]
-name = "auto-rust-developer"
+name = "rust-developer"
 version = "0.1.0"
 edition = "2021"
 authors = ["0xtechroot <root@ancilar.com>"]
-description = "A modern Rust CLI application with async capabilities"
+description = "A comprehensive Rust development toolkit and CLI application"
+license = "MIT"
+repository = "https://github.com/0xtechroot/rust-developer"
+keywords = ["cli", "async", "toolkit", "development"]
+categories = ["command-line-utilities", "development-tools"]
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
@@ -13,3 +17,7 @@ clap = { version = "4.0", features = ["derive"] }
 
 [dev-dependencies]
 criterion = "0.5"
+
+[[bench]]
+name = "benchmark"
+harness = false
