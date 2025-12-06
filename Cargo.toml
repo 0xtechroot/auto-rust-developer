@@ -1,0 +1,15 @@
+[package]
+name = "auto-rust-developer"
+version = "0.1.0"
+edition = "2021"
+authors = ["Auto Developer Bot <bot@auto-developer.com>"]
+description = "An automated Rust project with continuous development"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1", features = ["full"] }
+clap = { version = "4.0", features = ["derive"] }
+
+[dev-dependencies]
+criterion = "0.5"
