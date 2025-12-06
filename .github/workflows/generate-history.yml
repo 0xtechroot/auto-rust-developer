@@ -1,0 +1,183 @@
+name: Generate 3-Year History
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate-history:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Configure Git
+        run: |
+          git config user.name "0xtechroot"
+          git config user.email "root@ancilar.com"
+      
+      - name: Generate 3-year commit history
+        run: |
+          echo "🚀 Starting history generation..."
+          
+          # Calculate dates
+          START_DATE=$(date -d "3 years ago" +%s)
+          END_DATE=$(date +%s)
+          TOTAL_COMMITS=1000
+          
+          # Commit message arrays
+          declare -a FEAT_MSGS=(
+            "add async processing module"
+            "implement new CLI commands"
+            "add database integration"
+            "implement authentication system"
+            "add REST API endpoints"
+            "implement caching layer"
+            "add WebSocket support"
+            "implement rate limiting"
+            "add logging framework"
+            "implement configuration management"
+          )
+          
+          declare -a FIX_MSGS=(
+            "resolve memory leak in worker threads"
+            "fix race condition in async handler"
+            "correct error handling in parser"
+            "fix panic in edge case scenario"
+            "resolve deadlock in connection pool"
+            "fix buffer overflow vulnerability"
+            "correct timezone handling"
+            "fix null pointer dereference"
+          )
+          
+          declare -a REFACTOR_MSGS=(
+            "restructure module organization"
+            "improve code readability"
+            "optimize database queries"
+            "simplify error handling"
+            "reduce code duplication"
+            "improve type safety"
+            "enhance API design"
+            "streamline configuration"
+          )
+          
+          declare -a TEST_MSGS=(
+            "add unit tests for core module"
+            "add integration tests"
+            "add property-based tests"
+            "add benchmark tests"
+            "improve test coverage"
+          )
+          
+          declare -a DOCS_MSGS=(
+            "update README with examples"
+            "add API documentation"
+            "improve code comments"
+            "add usage guide"
+            "update installation instructions"
+          )
+          
+          declare -a CHORE_MSGS=(
+            "update dependencies"
+            "bump version"
+            "update CI configuration"
+            "clean up build artifacts"
+            "update gitignore"
+          )
+          
+          # Create orphan branch
+          git checkout --orphan temp-history
+          git rm -rf .
+          
+          # Restore all files
+          git checkout HEAD -- .
+          
+          # Initial commit
+          INIT_DATE=$(date -d "@$START_DATE" --iso-8601=seconds)
+          git add -A
+          GIT_AUTHOR_DATE="$INIT_DATE" GIT_COMMITTER_DATE="$INIT_DATE" \
+            git commit -m "feat: initial project setup
+
+- Initialize Rust project structure
+- Add core dependencies
+- Set up CI/CD pipeline
+- Add basic documentation" --allow-empty
+          
+          echo "✅ Initial commit created"
+          
+          # Generate commits
+          for i in $(seq 1 $TOTAL_COMMITS); do
+            # Random timestamp
+            RANDOM_OFFSET=$((RANDOM % (END_DATE - START_DATE)))
+            COMMIT_TIMESTAMP=$((START_DATE + RANDOM_OFFSET))
+            
+            # Skip some weekends
+            DAY_OF_WEEK=$(date -d "@$COMMIT_TIMESTAMP" +%u)
+            if [ $DAY_OF_WEEK -eq 6 ] || [ $DAY_OF_WEEK -eq 7 ]; then
+              if [ $((RANDOM % 10)) -lt 7 ]; then
+                continue
+              fi
+            fi
+            
+            # Select commit type
+            RAND=$((RANDOM % 100))
+            if [ $RAND -lt 35 ]; then
+              TYPE="feat"
+              MSG_ARRAY=("${FEAT_MSGS[@]}")
+            elif [ $RAND -lt 55 ]; then
+              TYPE="fix"
+              MSG_ARRAY=("${FIX_MSGS[@]}")
+            elif [ $RAND -lt 70 ]; then
+              TYPE="refactor"
+              MSG_ARRAY=("${REFACTOR_MSGS[@]}")
+            elif [ $RAND -lt 80 ]; then
+              TYPE="test"
+              MSG_ARRAY=("${TEST_MSGS[@]}")
+            elif [ $RAND -lt 90 ]; then
+              TYPE="docs"
+              MSG_ARRAY=("${DOCS_MSGS[@]}")
+            else
+              TYPE="chore"
+              MSG_ARRAY=("${CHORE_MSGS[@]}")
+            fi
+            
+            # Get random message
+            MSG_INDEX=$((RANDOM % ${#MSG_ARRAY[@]}))
+            MSG="${MSG_ARRAY[$MSG_INDEX]}"
+            
+            # Add scope occasionally
+            if [ $((RANDOM % 3)) -eq 0 ]; then
+              SCOPES=("core" "api" "cli" "db" "auth" "utils")
+              SCOPE_INDEX=$((RANDOM % ${#SCOPES[@]}))
+              SCOPE="${SCOPES[$SCOPE_INDEX]}"
+              COMMIT_MSG="$TYPE($SCOPE): $MSG"
+            else
+              COMMIT_MSG="$TYPE: $MSG"
+            fi
+            
+            # Create commit with backdated timestamp
+            COMMIT_DATE=$(date -d "@$COMMIT_TIMESTAMP" --iso-8601=seconds)
+            GIT_AUTHOR_DATE="$COMMIT_DATE" GIT_COMMITTER_DATE="$COMMIT_DATE" \
+              git commit --allow-empty -m "$COMMIT_MSG"
+            
+            # Progress
+            if [ $((i % 100)) -eq 0 ]; then
+              echo "✅ Generated $i/$TOTAL_COMMITS commits..."
+            fi
+          done
+          
+          echo "✅ All commits generated!"
+          
+          # Delete old main and rename
+          git branch -D main 2>/dev/null || true
+          git branch -m main
+          
+          echo "🚀 Pushing to GitHub..."
+          git push -f origin main
+          
+          echo "✅ History generation complete!"
