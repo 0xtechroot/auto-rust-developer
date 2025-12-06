@@ -205,14 +205,14 @@ EOF
           esac
           
           git config user.name "0xtechroot"
-          git config user.email "manietdavv@gmail.com"
+          git config user.email "root@ancilar.com"
           
           git add .
           if git diff --staged --quiet; then
             echo "No changes"
           else
             git commit -m "$COMMIT_MSG"
-            git push
+            git push --force-with-lease
           fi
 
   issue-tracking:
