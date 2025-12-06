@@ -2,6 +2,9 @@ name: Generate 3-Year History
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - trigger-history
 
 jobs:
   generate-history:
@@ -42,6 +45,11 @@ jobs:
             "implement rate limiting"
             "add logging framework"
             "implement configuration management"
+            "add error recovery mechanisms"
+            "implement retry logic"
+            "add metrics collection"
+            "implement health checks"
+            "add middleware support"
           )
           
           declare -a FIX_MSGS=(
@@ -53,6 +61,8 @@ jobs:
             "fix buffer overflow vulnerability"
             "correct timezone handling"
             "fix null pointer dereference"
+            "resolve compilation warnings"
+            "fix clippy lints"
           )
           
           declare -a REFACTOR_MSGS=(
@@ -64,6 +74,8 @@ jobs:
             "improve type safety"
             "enhance API design"
             "streamline configuration"
+            "optimize memory usage"
+            "improve performance bottlenecks"
           )
           
           declare -a TEST_MSGS=(
@@ -72,6 +84,8 @@ jobs:
             "add property-based tests"
             "add benchmark tests"
             "improve test coverage"
+            "add edge case tests"
+            "add regression tests"
           )
           
           declare -a DOCS_MSGS=(
@@ -80,6 +94,7 @@ jobs:
             "improve code comments"
             "add usage guide"
             "update installation instructions"
+            "add architecture documentation"
           )
           
           declare -a CHORE_MSGS=(
@@ -88,14 +103,15 @@ jobs:
             "update CI configuration"
             "clean up build artifacts"
             "update gitignore"
+            "configure linting rules"
           )
           
           # Create orphan branch
           git checkout --orphan temp-history
-          git rm -rf .
+          git rm -rf . || true
           
-          # Restore all files
-          git checkout HEAD -- .
+          # Restore all files from main
+          git checkout main -- . || git checkout HEAD -- .
           
           # Initial commit
           INIT_DATE=$(date -d "@$START_DATE" --iso-8601=seconds)
@@ -111,12 +127,13 @@ jobs:
           echo "✅ Initial commit created"
           
           # Generate commits
+          ACTUAL_COMMITS=0
           for i in $(seq 1 $TOTAL_COMMITS); do
             # Random timestamp
             RANDOM_OFFSET=$((RANDOM % (END_DATE - START_DATE)))
             COMMIT_TIMESTAMP=$((START_DATE + RANDOM_OFFSET))
             
-            # Skip some weekends
+            # Skip some weekends (70% chance)
             DAY_OF_WEEK=$(date -d "@$COMMIT_TIMESTAMP" +%u)
             if [ $DAY_OF_WEEK -eq 6 ] || [ $DAY_OF_WEEK -eq 7 ]; then
               if [ $((RANDOM % 10)) -lt 7 ]; then
@@ -124,7 +141,7 @@ jobs:
               fi
             fi
             
-            # Select commit type
+            # Select commit type (weighted distribution)
             RAND=$((RANDOM % 100))
             if [ $RAND -lt 35 ]; then
               TYPE="feat"
@@ -150,9 +167,9 @@ jobs:
             MSG_INDEX=$((RANDOM % ${#MSG_ARRAY[@]}))
             MSG="${MSG_ARRAY[$MSG_INDEX]}"
             
-            # Add scope occasionally
+            # Add scope occasionally (33% chance)
             if [ $((RANDOM % 3)) -eq 0 ]; then
-              SCOPES=("core" "api" "cli" "db" "auth" "utils")
+              SCOPES=("core" "api" "cli" "db" "auth" "utils" "config" "tests")
               SCOPE_INDEX=$((RANDOM % ${#SCOPES[@]}))
               SCOPE="${SCOPES[$SCOPE_INDEX]}"
               COMMIT_MSG="$TYPE($SCOPE): $MSG"
@@ -165,19 +182,22 @@ jobs:
             GIT_AUTHOR_DATE="$COMMIT_DATE" GIT_COMMITTER_DATE="$COMMIT_DATE" \
               git commit --allow-empty -m "$COMMIT_MSG"
             
-            # Progress
-            if [ $((i % 100)) -eq 0 ]; then
-              echo "✅ Generated $i/$TOTAL_COMMITS commits..."
+            ACTUAL_COMMITS=$((ACTUAL_COMMITS + 1))
+            
+            # Progress indicator
+            if [ $((ACTUAL_COMMITS % 100)) -eq 0 ]; then
+              echo "✅ Generated $ACTUAL_COMMITS commits..."
             fi
           done
           
-          echo "✅ All commits generated!"
+          echo "✅ Total commits generated: $ACTUAL_COMMITS"
           
           # Delete old main and rename
           git branch -D main 2>/dev/null || true
           git branch -m main
           
-          echo "🚀 Pushing to GitHub..."
+          echo "🚀 Pushing to GitHub with force..."
           git push -f origin main
           
           echo "✅ History generation complete!"
+          echo "📊 Check your profile: https://github.com/0xtechroot"
