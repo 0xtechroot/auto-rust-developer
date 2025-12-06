@@ -2,11 +2,11 @@
 
 This guide will help you generate 1000 commits spanning the last 3 years to make your GitHub profile look highly active.
 
-## ✅ Repository Renamed
+## ✅ Repository Information
 
-- **Old Name:** `auto-rust-developer`
-- **New Name:** `rust-developer`
+- **Repository Name:** `rust-developer`
 - **URL:** https://github.com/0xtechroot/rust-developer
+- **Author:** 0xtechroot <root@ancilar.com>
 
 ## 📋 Prerequisites
 
@@ -108,13 +108,36 @@ chore: update dependencies
 perf(core): optimize memory usage
 ```
 
-## 🔄 After Setup
+## 🔄 After Setup - Automated Activity
 
-Once the history is generated, the automated workflow will continue to:
+Once the history is generated, the automated workflow will continue with **realistic developer activity**:
 
-- Make **1 commit every hour**
-- Create **issues every 3 hours**
-- All future commits will maintain the same author: **0xtechroot <root@ancilar.com>**
+### **Commit Schedule:**
+- **Every 4 hours** (6 times per day)
+- **1-3 commits per run** (randomized for realism)
+- **~12-18 commits per day**
+- **~360-540 commits per month**
+
+### **Issue Tracking:**
+- **Every 6 hours** (4 times per day)
+- Creates development tasks and feature requests
+- Professional issue descriptions
+
+### **Why 4 Hours is Realistic:**
+
+✅ **Mimics real developer workflow** (morning, afternoon, evening sessions)
+✅ **Not too frequent** (avoids looking like a bot)
+✅ **Not too sparse** (shows consistent activity)
+✅ **Natural breaks** (lunch, meetings, breaks)
+✅ **Sustainable pattern** (looks like someone actually working)
+
+**Example daily pattern:**
+- 9 AM: 2 commits (morning work)
+- 1 PM: 1 commit (after lunch)
+- 5 PM: 3 commits (afternoon session)
+- 9 PM: 1 commit (evening work)
+
+All future commits will maintain the same author: **0xtechroot <root@ancilar.com>**
 
 ## 🛠️ Troubleshooting
 
@@ -152,14 +175,15 @@ After pushing, your GitHub profile will show:
 ✅ **Consistent activity** across multiple years
 ✅ **Professional commit history** with meaningful messages
 ✅ **Real code contributions** (not empty commits)
+✅ **Realistic patterns** (4-hour intervals, varied commit counts)
 
 ## 🎯 Next Steps
 
-1. ✅ Run `generate-history.sh`
+1. ✅ Run `generate-history.sh` (one-time, 10 minutes)
 2. ✅ Push with `git push -f origin main`
 3. ✅ Check your GitHub profile contribution graph
-4. ✅ Let the automated workflow continue making commits
-5. ✅ Enjoy your active GitHub profile!
+4. ✅ Let the automated workflow continue (every 4 hours)
+5. ✅ Enjoy your active, realistic GitHub profile!
 
 ## ⚠️ Important Notes
 
@@ -168,6 +192,21 @@ After pushing, your GitHub profile will show:
 - Cannot be undone (unless you have a backup)
 - GitHub contribution graph updates within 24 hours
 - Private repositories don't show on public contribution graph
+- **4-hour schedule** is optimal for realistic developer activity
+
+## 📊 Activity Projection
+
+With the 4-hour schedule:
+
+| Timeframe | Estimated Commits |
+|-----------|------------------|
+| 1 Week    | 84-126 commits   |
+| 1 Month   | 360-540 commits  |
+| 3 Months  | 1,080-1,620 commits |
+| 6 Months  | 2,160-3,240 commits |
+| 1 Year    | 4,320-6,480 commits |
+
+Combined with the initial 1000 backdated commits, you'll have an extremely active profile!
 
 ## 🔗 Resources
 
