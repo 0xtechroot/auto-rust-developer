@@ -1,21 +1,23 @@
-//! Auto Rust Developer Library
+//! Rust Developer Toolkit
 //! 
-//! This library is automatically maintained by an AI developer bot
-//! that commits code every hour and creates issues autonomously.
+//! A comprehensive library for building high-performance CLI applications
+//! with async capabilities, robust error handling, and extensive testing.
 
 pub mod utils;
 
-/// Core application logic
+/// Core application structure
 pub struct App {
     pub name: String,
     pub version: String,
 }
 
 impl App {
+    /// Create a new App instance
     pub fn new(name: String, version: String) -> Self {
         Self { name, version }
     }
     
+    /// Get application information
     pub fn info(&self) -> String {
         format!("{} v{}", self.name, self.version)
     }
