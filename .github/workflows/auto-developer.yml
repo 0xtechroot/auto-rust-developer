@@ -1,15 +1,17 @@
-name: Automated Rust Developer
+name: CI/CD Pipeline
 
 on:
   schedule:
-    # Runs every hour
     - cron: '0 * * * *'
-    # Create issues every 3 hours
     - cron: '0 */3 * * *'
-  workflow_dispatch: # Allows manual triggering
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  auto-commit:
+  development:
     runs-on: ubuntu-latest
     if: github.event.schedule == '0 * * * *' || github.event_name == 'workflow_dispatch'
     permissions:
@@ -27,22 +29,18 @@ jobs:
           toolchain: stable
           override: true
       
-      - name: Generate and commit code
+      - name: Development work
         run: |
-          # Array of commit types
-          TYPES=("feat" "fix" "refactor" "test" "docs" "chore")
+          TYPES=("feat" "fix" "refactor" "test" "docs" "chore" "perf")
           TYPE=${TYPES[$RANDOM % ${#TYPES[@]}]}
           
-          # Generate timestamp-based feature
           TIMESTAMP=$(date +%s)
           HOUR=$(date +%H)
           
-          # Create or update Rust files based on hour
           case $((HOUR % 6)) in
             0)
-              # Add new module
               cat > src/module_$TIMESTAMP.rs << 'EOF'
-          /// Auto-generated module for feature processing
+          /// Feature processing module
           use std::error::Error;
           
           pub struct Feature {
@@ -79,12 +77,11 @@ jobs:
           }
           EOF
               echo "pub mod module_$TIMESTAMP;" >> src/lib.rs
-              COMMIT_MSG="feat(modules): add feature processing module $TIMESTAMP"
+              COMMIT_MSG="feat(modules): add feature processing capabilities"
               ;;
             1)
-              # Add error handling module
               cat > src/errors.rs << 'EOF'
-          /// Custom error types for the application
+          /// Error handling module
           use std::fmt;
           
           #[derive(Debug)]
@@ -109,12 +106,11 @@ jobs:
               if ! grep -q "pub mod errors;" src/lib.rs; then
                   echo "pub mod errors;" >> src/lib.rs
               fi
-              COMMIT_MSG="feat(errors): add custom error types for better error handling"
+              COMMIT_MSG="fix(errors): improve error handling with custom types"
               ;;
             2)
-              # Add configuration module
               cat > src/config.rs << 'EOF'
-          /// Configuration management
+          /// Configuration module
           use serde::{Deserialize, Serialize};
           
           #[derive(Debug, Serialize, Deserialize)]
@@ -150,10 +146,9 @@ jobs:
               if ! grep -q "pub mod config;" src/lib.rs; then
                   echo "pub mod config;" >> src/lib.rs
               fi
-              COMMIT_MSG="feat(config): add configuration management module"
+              COMMIT_MSG="refactor(config): add configuration management"
               ;;
             3)
-              # Add tests
               mkdir -p tests
               cat > tests/integration_test.rs << 'EOF'
           use auto_rust_developer::App;
@@ -170,24 +165,22 @@ jobs:
               assert_eq!(app.name, "MyApp");
           }
           EOF
-              COMMIT_MSG="test(integration): add integration tests for core functionality"
+              COMMIT_MSG="test: add integration test coverage"
               ;;
             4)
-              # Update README with new features
               cat >> README.md << 'EOF'
 
 ## 🔄 Recent Updates
 
-- Automated hourly commits with meaningful code changes
-- Self-generating GitHub issues for development tasks
-- Comprehensive test coverage
-- Modular architecture with separation of concerns
+- Enhanced modular architecture
+- Improved error handling
+- Expanded test coverage
+- Performance optimizations
 
 EOF
-              COMMIT_MSG="docs(readme): update documentation with recent features"
+              COMMIT_MSG="docs: update documentation"
               ;;
             5)
-              # Add benchmarks
               mkdir -p benches
               cat > benches/benchmark.rs << 'EOF'
           use criterion::{black_box, criterion_group, criterion_main, Criterion};
@@ -207,85 +200,81 @@ EOF
           criterion_group!(benches, benchmark_app_creation);
           criterion_main!(benches);
           EOF
-              COMMIT_MSG="perf(bench): add performance benchmarks"
+              COMMIT_MSG="perf: add performance benchmarks"
               ;;
           esac
           
-          # Configure git
-          git config user.name "Auto Developer Bot"
-          git config user.email "bot@auto-developer.com"
+          git config user.name "0xtechroot"
+          git config user.email "manietdavv@gmail.com"
           
-          # Commit changes
           git add .
           if git diff --staged --quiet; then
-            echo "No changes to commit"
+            echo "No changes"
           else
             git commit -m "$COMMIT_MSG"
             git push
           fi
 
-  create-issue:
+  issue-tracking:
     runs-on: ubuntu-latest
     if: github.event.schedule == '0 */3 * * *' || github.event_name == 'workflow_dispatch'
     permissions:
       issues: write
     
     steps:
-      - name: Create automated issue
+      - name: Track development tasks
         uses: actions/github-script@v7
         with:
           script: |
-            const issues = [
+            const tasks = [
               {
-                title: 'feat: Implement async data processing with tokio',
-                body: '## Description\nAdd asynchronous data processing capabilities using tokio runtime for improved performance.\n\n## Tasks\n- [ ] Create async module structure\n- [ ] Add tokio runtime configuration\n- [ ] Implement async handlers for I/O operations\n- [ ] Add async tests\n\n## Expected Outcome\nImproved performance for I/O-bound operations.',
-                labels: ['enhancement', 'auto-generated', 'async']
+                title: 'Implement async data processing',
+                body: '## Overview\nAdd asynchronous capabilities for improved performance.\n\n## Tasks\n- [ ] Create async module\n- [ ] Add tokio runtime\n- [ ] Implement async handlers\n- [ ] Add async tests\n\n## Expected Outcome\nImproved I/O performance',
+                labels: ['enhancement', 'performance']
               },
               {
-                title: 'fix: Improve error handling across modules',
-                body: '## Description\nCurrent error handling needs improvement for better debugging and user experience.\n\n## Tasks\n- [ ] Add custom error types with context\n- [ ] Implement Display and Debug traits\n- [ ] Add error propagation with ? operator\n- [ ] Create error handling documentation\n\n## Expected Outcome\nBetter error messages and easier debugging.',
-                labels: ['bug', 'auto-generated', 'error-handling']
+                title: 'Improve error handling',
+                body: '## Overview\nEnhance error handling for better debugging.\n\n## Tasks\n- [ ] Add custom error types\n- [ ] Implement Display trait\n- [ ] Add error context\n- [ ] Update documentation\n\n## Expected Outcome\nBetter error messages',
+                labels: ['bug', 'quality']
               },
               {
-                title: 'test: Increase test coverage to 90%',
-                body: '## Description\nAdd comprehensive unit and integration tests to achieve 90% code coverage.\n\n## Tasks\n- [ ] Add unit tests for all public functions\n- [ ] Create integration test suite\n- [ ] Add property-based tests with proptest\n- [ ] Set up code coverage reporting\n\n## Expected Outcome\n90%+ test coverage with comprehensive test suite.',
-                labels: ['testing', 'auto-generated', 'quality']
+                title: 'Increase test coverage',
+                body: '## Overview\nExpand test suite for better reliability.\n\n## Tasks\n- [ ] Add unit tests\n- [ ] Create integration tests\n- [ ] Add property tests\n- [ ] Set up coverage reporting\n\n## Expected Outcome\n90%+ code coverage',
+                labels: ['testing', 'quality']
               },
               {
-                title: 'docs: Enhance API documentation with examples',
-                body: '## Description\nImprove documentation with comprehensive examples and usage guides.\n\n## Tasks\n- [ ] Add rustdoc comments to all public APIs\n- [ ] Create usage examples in docs\n- [ ] Add code examples to README\n- [ ] Generate and publish docs\n\n## Expected Outcome\nComprehensive documentation for all users.',
-                labels: ['documentation', 'auto-generated']
+                title: 'Enhance documentation',
+                body: '## Overview\nImprove documentation with examples.\n\n## Tasks\n- [ ] Add rustdoc comments\n- [ ] Create usage examples\n- [ ] Update README\n- [ ] Generate docs\n\n## Expected Outcome\nComprehensive documentation',
+                labels: ['documentation']
               },
               {
-                title: 'refactor: Optimize performance bottlenecks',
-                body: '## Description\nIdentify and optimize performance bottlenecks in the codebase.\n\n## Tasks\n- [ ] Profile application with cargo flamegraph\n- [ ] Optimize hot paths\n- [ ] Reduce allocations where possible\n- [ ] Add performance benchmarks\n\n## Expected Outcome\nImproved runtime performance and reduced memory usage.',
-                labels: ['performance', 'auto-generated', 'refactor']
+                title: 'Optimize performance',
+                body: '## Overview\nIdentify and fix performance bottlenecks.\n\n## Tasks\n- [ ] Profile application\n- [ ] Optimize hot paths\n- [ ] Reduce allocations\n- [ ] Add benchmarks\n\n## Expected Outcome\nImproved runtime performance',
+                labels: ['performance', 'optimization']
               },
               {
-                title: 'chore: Update dependencies to latest versions',
-                body: '## Description\nUpdate all dependencies to their latest stable versions.\n\n## Tasks\n- [ ] Run cargo update\n- [ ] Check for breaking changes\n- [ ] Update code for new API changes\n- [ ] Run full test suite\n\n## Expected Outcome\nUp-to-date dependencies with latest features and security patches.',
-                labels: ['dependencies', 'auto-generated', 'maintenance']
+                title: 'Update dependencies',
+                body: '## Overview\nKeep dependencies up to date.\n\n## Tasks\n- [ ] Run cargo update\n- [ ] Check for breaking changes\n- [ ] Update code if needed\n- [ ] Run test suite\n\n## Expected Outcome\nLatest stable dependencies',
+                labels: ['dependencies', 'maintenance']
               }
             ];
             
-            const randomIssue = issues[Math.floor(Math.random() * issues.length)];
+            const task = tasks[Math.floor(Math.random() * tasks.length)];
             
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: randomIssue.title,
-              body: randomIssue.body,
-              labels: randomIssue.labels
+              title: task.title,
+              body: task.body,
+              labels: task.labels
             });
-            
-            console.log(`Created issue: ${randomIssue.title}`);
 
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
       
       - name: Setup Rust
@@ -294,16 +283,16 @@ EOF
           toolchain: stable
           override: true
       
-      - name: Build project
+      - name: Build
         run: cargo build --verbose
       
-      - name: Run tests
+      - name: Test
         run: cargo test --verbose
       
-      - name: Check formatting
+      - name: Format check
         run: cargo fmt -- --check
         continue-on-error: true
       
-      - name: Run clippy
+      - name: Clippy
         run: cargo clippy -- -D warnings
         continue-on-error: true
