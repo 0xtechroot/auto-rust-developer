@@ -1,15 +1,23 @@
-# 🤖 Auto Rust Developer
+# 🦀 Auto Rust Developer
 
-An automated Rust project that demonstrates continuous development with AI-powered commits and issue generation.
+A modern Rust CLI application demonstrating best practices in systems programming, async operations, and modular architecture.
 
 ## 🌟 Features
 
-- ⏰ **Automated Commits**: Code commits every hour
-- 🎯 **Self-Generating Issues**: Creates development tasks autonomously
-- 🔄 **Continuous Integration**: Automated testing and building
-- 🦀 **Pure Rust**: Built with modern Rust practices
+- ⚡ **High Performance**: Built with Rust for maximum speed and safety
+- 🔄 **Async Operations**: Leveraging Tokio for concurrent task handling
+- 🎯 **Modular Design**: Clean architecture with separation of concerns
+- 🧪 **Well Tested**: Comprehensive unit and integration test coverage
+- 📦 **Easy to Use**: Simple CLI interface with intuitive commands
 
-## 📦 Installation
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Rust 1.70 or higher
+- Cargo (comes with Rust)
+
+### Installation
 
 ```bash
 git clone https://github.com/0xtechroot/auto-rust-developer.git
@@ -17,7 +25,7 @@ cd auto-rust-developer
 cargo build --release
 ```
 
-## 🚀 Usage
+### Usage
 
 ```bash
 # Run the application
@@ -26,14 +34,8 @@ cargo run -- run
 # Run tests
 cargo run -- test
 
-# Show project info
+# Show project information
 cargo run -- info
-```
-
-## 🧪 Testing
-
-```bash
-cargo test
 ```
 
 ## 🏗️ Project Structure
@@ -41,27 +43,78 @@ cargo test
 ```
 auto-rust-developer/
 ├── src/
-│   ├── main.rs      # CLI application entry point
+│   ├── main.rs      # Application entry point
 │   ├── lib.rs       # Core library
 │   └── utils.rs     # Utility functions
 ├── tests/           # Integration tests
-├── Cargo.toml       # Project manifest
-└── README.md        # This file
+├── Cargo.toml       # Dependencies and metadata
+└── README.md        # Documentation
+```
+
+## 🧪 Testing
+
+Run the full test suite:
+
+```bash
+cargo test
+```
+
+Run tests with output:
+
+```bash
+cargo test -- --nocapture
+```
+
+## 🔧 Development
+
+### Building
+
+```bash
+# Debug build
+cargo build
+
+# Release build (optimized)
+cargo build --release
+```
+
+### Code Quality
+
+```bash
+# Format code
+cargo fmt
+
+# Run linter
+cargo clippy
+```
+
+## 📚 Documentation
+
+Generate and view documentation:
+
+```bash
+cargo doc --open
 ```
 
 ## 🤝 Contributing
 
-This project is automatically maintained by an AI developer bot. Issues and pull requests are welcome!
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-MIT License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🔗 Links
 
-- Repository: https://github.com/0xtechroot/auto-rust-developer
-- Issues: https://github.com/0xtechroot/auto-rust-developer/issues
+- [Repository](https://github.com/0xtechroot/auto-rust-developer)
+- [Issues](https://github.com/0xtechroot/auto-rust-developer/issues)
+- [Rust Documentation](https://doc.rust-lang.org/)
 
----
+## ⭐ Acknowledgments
 
-**Note**: This project is part of an automated development experiment where an AI acts as a developer for 24 hours, making commits and creating issues autonomously.
+Built with modern Rust practices and inspired by the Rust community's commitment to performance and safety.
