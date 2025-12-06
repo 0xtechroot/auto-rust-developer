@@ -1,14 +1,15 @@
-# 🦀 Auto Rust Developer
+# 🦀 Rust Developer
 
-A modern Rust CLI application demonstrating best practices in systems programming, async operations, and modular architecture.
+A comprehensive Rust development toolkit and CLI application built with modern best practices, featuring async operations, robust error handling, and extensive testing.
 
 ## 🌟 Features
 
-- ⚡ **High Performance**: Built with Rust for maximum speed and safety
-- 🔄 **Async Operations**: Leveraging Tokio for concurrent task handling
-- 🎯 **Modular Design**: Clean architecture with separation of concerns
-- 🧪 **Well Tested**: Comprehensive unit and integration test coverage
-- 📦 **Easy to Use**: Simple CLI interface with intuitive commands
+- ⚡ **High Performance**: Optimized Rust code for maximum speed and efficiency
+- 🔄 **Async Operations**: Full async/await support with Tokio runtime
+- 🎯 **Modular Architecture**: Clean, maintainable code structure
+- 🧪 **Comprehensive Testing**: Unit, integration, and benchmark tests
+- 🛡️ **Type Safety**: Leveraging Rust's powerful type system
+- 📦 **Easy Integration**: Simple API and CLI interface
 
 ## 🚀 Quick Start
 
@@ -20,8 +21,8 @@ A modern Rust CLI application demonstrating best practices in systems programmin
 ### Installation
 
 ```bash
-git clone https://github.com/0xtechroot/auto-rust-developer.git
-cd auto-rust-developer
+git clone https://github.com/0xtechroot/rust-developer.git
+cd rust-developer
 cargo build --release
 ```
 
@@ -41,12 +42,13 @@ cargo run -- info
 ## 🏗️ Project Structure
 
 ```
-auto-rust-developer/
+rust-developer/
 ├── src/
 │   ├── main.rs      # Application entry point
 │   ├── lib.rs       # Core library
 │   └── utils.rs     # Utility functions
 ├── tests/           # Integration tests
+├── benches/         # Performance benchmarks
 ├── Cargo.toml       # Dependencies and metadata
 └── README.md        # Documentation
 ```
@@ -63,6 +65,12 @@ Run tests with output:
 
 ```bash
 cargo test -- --nocapture
+```
+
+Run benchmarks:
+
+```bash
+cargo bench
 ```
 
 ## 🔧 Development
@@ -85,6 +93,9 @@ cargo fmt
 
 # Run linter
 cargo clippy
+
+# Check for security vulnerabilities
+cargo audit
 ```
 
 ## 📚 Documentation
@@ -101,7 +112,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
@@ -111,10 +122,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔗 Links
 
-- [Repository](https://github.com/0xtechroot/auto-rust-developer)
-- [Issues](https://github.com/0xtechroot/auto-rust-developer/issues)
+- [Repository](https://github.com/0xtechroot/rust-developer)
+- [Issues](https://github.com/0xtechroot/rust-developer/issues)
 - [Rust Documentation](https://doc.rust-lang.org/)
 
 ## ⭐ Acknowledgments
 
-Built with modern Rust practices and inspired by the Rust community's commitment to performance and safety.
+Built with Rust's powerful ecosystem and inspired by the community's commitment to performance, safety, and developer experience.
