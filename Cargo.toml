@@ -2,7 +2,7 @@
 name = "auto-rust-developer"
 version = "0.1.0"
 edition = "2021"
-authors = ["Manmeet <manietdavv@gmail.com>"]
+authors = ["0xtechroot <root@ancilar.com>"]
 description = "A modern Rust CLI application with async capabilities"
 
 [dependencies]
